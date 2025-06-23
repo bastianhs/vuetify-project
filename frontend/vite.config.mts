@@ -1,9 +1,12 @@
 // Plugins
+import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import Vue from '@vitejs/plugin-vue'
-import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import Fonts from 'unplugin-fonts/vite'
+import Layouts from 'vite-plugin-vue-layouts-next'
+import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
 import { defineConfig } from 'vite'
@@ -15,6 +18,24 @@ export default defineConfig({
     VueRouter({
       dts: 'src/typed-router.d.ts',
     }),
+    Layouts(),
+    AutoImport({
+      imports: [
+        'vue',
+        VueRouterAutoImports,
+        {
+          pinia: ['defineStore', 'storeToRefs'],
+        },
+      ],
+      dts: 'src/auto-imports.d.ts',
+      eslintrc: {
+        enabled: true,
+      },
+      vueTemplate: true,
+    }),
+    Components({
+      dts: 'src/components.d.ts',
+    }),
     Vue({
       template: { transformAssetUrls },
     }),
@@ -24,9 +45,6 @@ export default defineConfig({
       styles: {
         configFile: 'src/styles/settings.scss',
       },
-    }),
-    Components({
-      dts: 'src/components.d.ts',
     }),
     Fonts({
       fontsource: {
