@@ -38,7 +38,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusCreated, models.ToUserResponse(*user))
 }
 
 // GetUser retrieves a user by ID
@@ -53,7 +53,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "User not found"})
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, models.ToUserResponse(*user))
 }
 
 // GetAllUsers retrieves all users
@@ -63,7 +63,12 @@ func (h *UserHandler) GetAllUsers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, users)
+	responses := make([]models.UserResponse, len(users))
+	for i, u := range users {
+		responses[i] = models.ToUserResponse(u)
+	}
+
+	return c.JSON(http.StatusOK, responses)
 }
 
 // UpdateUser updates a user
@@ -102,7 +107,7 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, models.ToUserResponse(*user))
 }
 
 // DeleteUser deletes a user
