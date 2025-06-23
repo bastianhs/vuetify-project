@@ -66,6 +66,9 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    proxy: {
+      '/api': 'http://localhost:8000',
+    },
   },
   css: {
     preprocessorOptions: {
@@ -76,5 +79,9 @@ export default defineConfig({
         api: 'modern-compiler',
       },
     },
+  },
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
   },
 })
